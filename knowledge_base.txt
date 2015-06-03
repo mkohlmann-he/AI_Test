@@ -1,2 +1,5 @@
 apple is red
 apple isa fruit
+red isa color
+apple is round
+test failure condition

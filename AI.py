@@ -43,37 +43,68 @@
 #
 #
 def init(): #First Run, Open the knowledge base (KB) file and build the dictionary.
+    print("/n>>> Start of 'init' function <<<")
 	#Add Try-Except here
     kbFile_name = "knowledge_base.txt"
     kbFile = open(kbFile_name, "r")
     kbFileEntries = [line.strip("\n") for line in kbFile.readlines()]
-    print("Entire File contains:/n")
-    print(kbFileEntries)
+    #print("\nEntire File contains:/n") #Debug
+    #print(kbFileEntries) #Debug
 	
 	#Initialize the Dictionary Structure
     KB = {}
 	
 	#process Entries
-    print("Parsed Entries goes to:")
+    #print("\nParsed Entries goes to:") #Debug
     for kbEntry in kbFileEntries:
         kbEntry = kbEntry.strip("/n")
-        print(kbEntry)
-        addKeywordToDictionary(KB, kbEntry)
+        #print(kbEntry) #Debug
+        addKeywordToDictionaryFromFile(KB, kbEntry)
 	
-    print("Post Process Check:")
-    print(kbFileEntries)
+    print("\nPost Process Check:")
+    print(KB)
     kbFile.close()
+    
+    print("/n>>> END of 'init' function <<<")
     return KB
 	
-def main():
+def main(KB):
+    print("/n>>> START of 'main' function <<<")
+    print("/n>>> END of 'main' function <<<")
+    return
 
-	return
+def addKeywordToDictionaryFromFile(KB, entry):
+    parsedLine = entry.split()
+    addKeywordToDictionary(KB, parsedLine[0],parsedLine[1],parsedLine[2])
+    return
+    
+def addKeywordToDictionary(KB, Key1, Operator, Key2):
+    # Pre-validate
+    ValidOperators = ["is","isa"]
+    if Operator in ValidOperators:
+        createKeyIfNeeded(KB, Key1)
+        createKeyIfNeeded(KB, Key2)
+        # Run appropriate operation
+        if Operator == "is": # is condition
+            KB[Key1][0].append(Key2)
+            KB[Key2][2].append(Key1)
+        elif Operator == "isa": # isa condition
+            KB[Key1][1].append(Key2)
+            KB[Key2][2].append(Key1)
+    else:
+        print("Warning >> Invalid Operator: Expecting " + str(ValidOperators) +"."
+        print("        >> Received '" + str(Operator) + "'. Ignoring entry and continuing.")
 
-def addKeywordToDictionary(KB, entry):
-	return KB
+    return
 	
-	
-	
+def createKeyIfNeeded(KB, Key):
+    #Add first keyword to dictionary, if it doesn't already exist
+    if Key not in KB:
+        KB[Key] = [[],[],[]]
+    return
+
+
+print("/n>>> START of Run <<<")        
 KB = init()
-main()
-raw_input("press Enter to Exit")
+main(KB)
+raw_input("/n>>> END of Run <<</npress Enter to Exit")
